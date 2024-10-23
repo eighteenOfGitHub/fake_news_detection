@@ -1,0 +1,14 @@
+比赛官网
+https://www.ncccu.org.cn/index/Paper/case1.html
+
+比赛数据来源（论文链接）
+https://aaai.org/papers/00516-weak-supervision-for-fake-news-detection-via-reinforcement-learning/
+
+adaboost算法五分钟懂思想 5min
+https://www.bilibili.com/video/BV1iA411e76Y/?spm_id_from=333.337.search-card.all.click&vd_source=87cbd3795a1d72e8c20b392ecc43c290
+
+adaboost实现(视频有源码) 13min
+https://www.bilibili.com/video/BV1rr4y1r7dQ/?spm_id_from=333.337.search-card.all.click&vd_source=87cbd3795a1d72e8c20b392ecc43c290
+
+adaboost算法公式推导 54min (半小时推导，半小时代码)
+https://www.bilibili.com/video/BV13S4y1t7aY/?spm_id_from=333.337.search-card.all.click&vd_source=87cbd3795a1d72e8c20b392ecc43c290
