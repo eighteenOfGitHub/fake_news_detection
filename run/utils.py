@@ -1,4 +1,28 @@
+import torch
 import collections
+import jieba
+
+# truncate_pad ------------------------------
+
+def truncate_pad(line, num_steps, padding_token): # 
+    if len(line) > num_steps:
+        return line[:num_steps]  # Truncate
+    return line + [padding_token] * (num_steps - len(line))  # Pad
+
+# tokenize ------------------------------
+
+def tokenize(lines):
+    tokenize_lines = [[i for i in jieba.cut(line)] for line in lines]
+    return tokenize_lines
+
+# init_vocab ------------------------------
+
+def init_vocab(texts, min_freq):
+    tokens = tokenize(texts)
+    vocab = Vocab(tokens, min_freq)
+    return vocab, tokens
+
+# Vocab ------------------------------
 
 class Vocab:
     """Vocabulary for text."""
@@ -38,3 +62,24 @@ class Vocab:
     @property
     def unk(self):  # Index for the unknown token
         return self.token_to_idx['<unk>']
+
+# tokenize -----------------------
+
+# def tokenize(line):
+#     tokenize_line = [i for i in jieba.cut(line)]
+#     return tokenize_line
+
+# try_gpus -----------------------
+
+def try_gpu(i=0):
+    if torch.cuda.device_count() >= i + 1:
+        return torch.device(f'cuda:{i}')
+    return torch.device('cpu')
+
+def main():
+    line = '我爱北京天安门'
+    print(tokenize(line))
+
+if __name__ == '__main__':
+    # main()
+    pass

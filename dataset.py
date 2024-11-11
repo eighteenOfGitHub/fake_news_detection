@@ -3,18 +3,26 @@ import torch
 import pandas as pd 
 import random
 import jieba
+import matplotlib.pyplot as plt
 
 from vocab import Vocab
 
 
-def read_db(data_dir):
-    text = []
-    
-    labels = pd.read_csv('./train/right_data.csv')['label'].to_list()
-    for file in os.listdir(data_dir):
-        with open(os.path.join(data_dir, file), 'r', encoding='utf-8') as f:
-            news = f.read().replace('\n', '')   
-            text.append(news)
+def read_db(db_name):
+
+    if db_name == "right_text":
+        text = []
+        data_dir = "./train/right_text"
+        labels = pd.read_csv('./train/usable_train.csv')['label'].to_list()
+        for file in os.listdir(data_dir):
+            with open(os.path.join(data_dir, file), 'r', encoding='utf-8') as f:
+                news = f.read().replace('\n', '')   
+                text.append(news)
+    elif db_name == "title":
+        train = pd.read_csv('./train/train.csv')
+        labels = train['label'].to_list()
+        text = [str(o)+'，'+str(t).replace(' ', '') for o,t in zip(train['Ofiicial Account Name'].to_list(), train['Title'].to_list())]
+
 
     # 打乱数据集，80%为训练集，20%为测试集
     
@@ -42,13 +50,27 @@ def load_array(data_arrays, batch_size, is_train=True):
     dataset = torch.utils.data.TensorDataset(*data_arrays)
     return torch.utils.data.DataLoader(dataset, batch_size, shuffle=is_train)
 
-def load_data_righttext_db(batch_size, num_steps=500):
+def load_data_db(db_name, batch_size):
     """返回数据迭代器和数据集的词表"""
-    data_dir = "./train/right_text"
-    train_data, test_data = read_db(data_dir) 
+    if db_name == "right_text":
+        num_steps = 900
+        min_freq = 10
+    elif db_name == "title":
+        num_steps = 30
+        min_freq = 2
+
+    train_data, test_data = read_db(db_name)
+
     train_tokens = tokenize(train_data[0])
     test_tokens = tokenize(test_data[0])
-    vocab = Vocab(train_tokens, min_freq=5)
+
+    # plt.xlabel('# tokens per review')
+    # plt.ylabel('count')
+    # plt.hist([len(line) for line in train_tokens]) # , bins=range(0, 1000, 50)
+    # plt.show()
+
+    
+    vocab = Vocab(train_tokens, min_freq)
     train_features = torch.tensor([truncate_pad( # 截断或填充
         vocab[line], num_steps, vocab['<pad>']) for line in train_tokens])
     test_features = torch.tensor([truncate_pad(
@@ -60,14 +82,12 @@ def load_data_righttext_db(batch_size, num_steps=500):
                                is_train=False)
     return train_iter, test_iter, vocab
 
-# def main():
-#     data_dir = "./train/right_text"
-#     read_db(data_dir)
-#     train_iter, test_iter, vocab = load_data_righttext_db(64)
-#     for X, y in train_iter:
-#         print('X:', X.shape, ', y:', y.shape)
-#         break
-#     print('小批量数目：', len(train_iter))
+def main():
+    train_iter, test_iter, vocab = load_data_db('title', 64)
+    for X, y in train_iter:
+        print('X:', X.shape, ', y:', y.shape)
+        break
+    print('小批量数目：', len(train_iter))
 
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()

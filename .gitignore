@@ -1,4 +1,4 @@
-/train
-.vscode
-/__pycache__
-/word_vec
+train/
+.vscode/
+__pycache__/
+word_vec/sgns.weibo.char

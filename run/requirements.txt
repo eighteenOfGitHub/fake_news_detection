@@ -1,0 +1,5 @@
+numpy
+pandas
+jieba
+beautifulsoup4
+torch

@@ -1,12 +1,9 @@
 import torch
 from torch import nn
-from d2l import torch as d2l
 import time
 import numpy as np
 from matplotlib_inline import backend_inline
 from matplotlib import pyplot as plt
-from IPython import display
-import os
 
 # tr_all_gpus -----------------------
 
@@ -106,6 +103,8 @@ class Accumulator:
 
 # evaluate_accuracy_gpu------------------------
 
+size = lambda x, *args, **kwargs: x.numel(*args, **kwargs)
+
 def evaluate_accuracy_gpu(net, data_iter, device=None):
     if isinstance(net, nn.Module):
         net.eval()  # Set the model to evaluation mode
@@ -122,7 +121,7 @@ def evaluate_accuracy_gpu(net, data_iter, device=None):
             else:
                 X = X.to(device)
             y = y.to(device)
-            metric.add(accuracy(net(X), y), d2l.size(y))
+            metric.add(accuracy(net(X), y), size(y))
     return metric[0] / metric[1]
 
 # Timer-------------------------
@@ -173,7 +172,7 @@ class Animator:
     def __init__(self, xlabel=None, ylabel=None, legend=None, xlim=None,
                  ylim=None, xscale='linear', yscale='linear',
                  fmts=('-', 'm--', 'g-.', 'r:'), nrows=1, ncols=1,
-                 figsize=(3.5, 2.5)):
+                 figsize=(5.5, 3.5)):
         """Defined in :numref:`sec_utils`"""
         # Incrementally plot multiple lines
         if legend is None:
@@ -206,5 +205,3 @@ class Animator:
         for x, y, fmt in zip(self.X, self.Y, self.fmts):
             self.axes[0].plot(x, y, fmt)
         self.config_axes()
-        display.display(self.fig)
-        display.clear_output(wait=True)

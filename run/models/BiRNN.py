@@ -9,9 +9,7 @@ class BiRNN(nn.Module):
         # 将bidirectional设置为True以获取双向循环神经网络
         self.encoder = nn.LSTM(embed_size, num_hiddens, num_layers=num_layers,
                                 bidirectional=True)
-        self.decoder = nn.Sequential(
-            nn.Linear(4 * num_hiddens, 8),
-            nn.Linear(8,2))
+        self.decoder = nn.Linear(4 * num_hiddens, 2)
 
     def forward(self, inputs):
         # inputs的形状是（批量大小，时间步数）
